@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
+<coverage lines-valid="4" lines-covered="4" line-rate="1" branches-valid="4" branches-covered="2" branch-rate="0.5" timestamp="1717149080237" complexity="0" version="0.1">
+  <sources>
+    <source>/workspace/cover-agent</source>
+  </sources>
+  <packages>
+    <package name="main" line-rate="1" branch-rate="0.5">
+      <classes>
+        <class name="text-encoding-polyfill.js" filename="utils/text-encoding-polyfill.js" line-rate="1" branch-rate="0.5">
+          <methods>
+          </methods>
+          <lines>
+            <line number="2" hits="1" branch="true" condition-coverage="50% (1/2)"/>
+            <line number="3" hits="1" branch="false"/>
+            <line number="5" hits="1" branch="true" condition-coverage="50% (1/2)"/>
+            <line number="6" hits="1" branch="false"/>
+          </lines>
+        </class>
+      </classes>
+    </package>
+  </packages>
+</coverage>
