@@ -1,8 +1,10 @@
+import datetime
 import logging
 import os
 import re
-import time
 import json
+from wandb.sdk.data_types.trace_tree import Trace
+
 from cover_agent.Runner import Runner
 from cover_agent.CoverageProcessor import CoverageProcessor
 from cover_agent.CustomLogger import CustomLogger
@@ -132,7 +134,7 @@ class UnitTestGenerator:
         # Instantiate CoverageProcessor and process the coverage report
         coverage_processor = CoverageProcessor(
             file_path=self.code_coverage_report_path,
-            filename=os.path.basename(self.source_file_path),
+            src_file_path=self.source_file_path,
             coverage_type=self.coverage_type,
         )
 
@@ -404,6 +406,16 @@ class UnitTestGenerator:
                     self.failed_test_runs.append(
                         {"code": generated_test, "error_message": error_message}
                     )  # Append failure details to the list
+
+                    if 'WANDB_API_KEY' in os.environ:
+                        fail_details["error_message"] = error_message
+                        root_span = Trace(
+                            name="fail_details_" + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"),
+                            kind="llm",  # kind can be "llm", "chain", "agent" or "tool
+                            inputs={"test_code": fail_details["test"]},
+                            outputs=fail_details)
+                        root_span.log(name='inference')
+
                     return fail_details
 
                 # If test passed, check for coverage increase
@@ -411,7 +423,7 @@ class UnitTestGenerator:
                     # Step 4: Check that the coverage has increased using the CoverageProcessor class
                     new_coverage_processor = CoverageProcessor(
                         file_path=self.code_coverage_report_path,
-                        filename=os.path.basename(self.source_file_path),
+                        src_file_path=self.source_file_path,
                         coverage_type=self.coverage_type,
                     )
                     _, _, new_percentage_covered = (
@@ -441,6 +453,15 @@ class UnitTestGenerator:
                                 "error_message": "did not increase code coverage",
                             }
                         )  # Append failure details to the list
+
+                        if 'WANDB_API_KEY' in os.environ:
+                            root_span = Trace(
+                                name="fail_details_"+datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"),
+                                kind="llm",  # kind can be "llm", "chain", "agent" or "tool
+                                inputs={"test_code": fail_details["test"]},
+                                outputs=fail_details)
+                            root_span.log(name='inference')
+
                         return fail_details
                 except Exception as e:
                     # Handle errors gracefully

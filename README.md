@@ -30,6 +30,10 @@ CodiumAI Cover Agent aims to help efficiently increasing code coverage, by autom
 
 
 ## News and Updates
+
+### 2024-06-01:
+Added support for comprehensive logging to [Weights and Biases](https://wandb.ai/). Set the `WANDB_API_KEY` environment variable to enable this feature.
+
 ### 2024-05-26:
 Cover-Agent now supports nearly any LLM model in the world, using [LiteLLM](#using-other-llms) package.
 
@@ -132,6 +136,20 @@ cover-agent \
   --max-iterations 1
 ```
 
+For an example using **java** `cd` into `templated_tests/java_gradle`, set up the project following the [README.md](templated_tests/java_gradle/README.md).
+To work with jacoco coverage reporting, follow the [README.md](templated_tests/java_gradle/README.md) Requirements section:
+and then run the following command:
+```shell
+cover-agent \
+  --source-file-path="src/main/java/com/davidparry/cover/SimpleMathOperations.java" \
+  --test-file-path="src/test/groovy/com/davidparry/cover/SimpleMathOperationsSpec.groovy" \
+  --code-coverage-report-path="build/reports/jacoco/test/jacocoTestReport.csv" \
+  --test-command="./gradlew clean test jacocoTestReport" \
+  --test-command-dir=$(pwd) \
+  --coverage-type="jacoco" \
+  --desired-coverage=70 \
+  --max-iterations=1
+```
 Try and add more tests to this project by running this command at the root of this repository:
 ```shell
 poetry run cover-agent \
@@ -149,7 +167,6 @@ Note: If you are using Poetry then use the `poetry run cover-agent` command inst
 
 ### Outputs
 A few debug files will be outputted locally within the repository (that are part of the `.gitignore`)
-* `generated_prompt.md`: The full prompt that is sent to the LLM
 * `run.log`: A copy of the logger that gets dumped to your `stdout`
 * `test_results.html`: A results table that contains the following for each generated test:
   * Test status
@@ -158,6 +175,9 @@ A few debug files will be outputted locally within the repository (that are part
   * `stderr`
   * `stdout`
   * Generated test
+
+### Additional logging
+If you set an environment variable `WANDB_API_KEY`, the prompts, responses, and additional information will be logged to [Weights and Biases](https://wandb.ai/).
 
 ### Using other LLMs
 This project uses LiteLLM to communicate with OpenAI and other hosted LLMs (supporting 100+ LLMs to date). To use a different model other than the OpenAI default you'll need to:

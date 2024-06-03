@@ -22,3 +22,13 @@ sh tests_integration/test_with_docker.sh \
   --test-file-path "app_test.go" \
   --test-command "go test -coverprofile=coverage.out && gocov convert coverage.out | gocov-xml > coverage.xml" \
   --model $MODEL
+
+# # Java Spring Calculator example
+# sh tests_integration/test_with_docker.sh \
+#   --dockerfile "templated_tests/java_spring_calculator/Dockerfile" \
+#   --source-file-path "src/main/java/com/example/calculator/controller/CalculatorController.java" \
+#   --test-file-path "src/test/java/com/example/calculator/controller/CalculatorControllerTest.java" \
+#   --test-command "mvn verify" \
+#   --coverage-type "jacoco" \
+#   --code-coverage-report-path "target/site/jacoco/jacoco.xml" \
+#   --model $MODEL
